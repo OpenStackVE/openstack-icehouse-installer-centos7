@@ -1,0 +1,13 @@
+1.1.1.el7 - 29-Julio-2014
+- Versión lista para producción basada en el código
+  de la versión 1.1.1.el6 (centos 6) con las modifica-
+  ciones necesarias para compatibilidad con EL7.
+
+0.0.2.el7 - 28-Julio-2014
+- Notas actualizadas para reflejar condicion de des-
+  activación de SELINUX.
+
+0.0.1.el7 - 28-Julio-2014
+- Primer beta basado en código de la versión 1.1.1.el6
+  modificado para EL7.
+
