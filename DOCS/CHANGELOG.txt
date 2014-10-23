@@ -1,3 +1,9 @@
+1.1.2.el7 - 22-Octubre-2014
+- Mejoras generales para metricas de cpu, red y disco
+  entre nova-compute y ceilometer.
+- Mejoras para instalación en ambientes con múltiples
+  nodos de compute.
+
 1.1.1.el7 - 29-Julio-2014
 - Versión lista para producción basada en el código
   de la versión 1.1.1.el6 (centos 6) con las modifica-

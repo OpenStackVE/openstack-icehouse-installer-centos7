@@ -399,7 +399,7 @@ openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enabl
 openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
 openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs enable_tunneling False
 openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs network_vlan_ranges $network_vlan_ranges
-openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs local_ip $neutronhost
+openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs local_ip $neutron_computehost
 openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs bridge_mappings $bridge_mappings
  
 case $dbflavor in
