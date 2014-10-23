@@ -1,3 +1,6 @@
+1.1.3.el7 - 22-Octubre-2014
+- Corrección adicional para Ceilometer
+
 1.1.2.el7 - 22-Octubre-2014
 - Mejoras generales para metricas de cpu, red y disco
   entre nova-compute y ceilometer.

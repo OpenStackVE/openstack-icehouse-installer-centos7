@@ -209,6 +209,8 @@ sed -r -i 's/http_control_exchanges\ =\ nova/http_control_exchanges=nova\nhttp_c
 openstack-config --set /etc/ceilometer/ceilometer.conf publisher_rpc metering_topic metering
 openstack-config --set /etc/ceilometer/ceilometer.conf rpc_notifier2 topics notifications
 
+usermod -G qemu,kvm,nova ceilometer
+
 echo ""
 echo "Aplicando reglas de IPTABLES"
 
