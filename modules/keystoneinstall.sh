@@ -118,7 +118,7 @@ esac
 
 openstack-config --set /etc/keystone/keystone.conf sql idle_timeout 200
 openstack-config --set /etc/keystone/keystone.conf catalog driver keystone.catalog.backends.sql.Catalog
-openstack-config --set /etc/keystone/keystone.conf token provider keystone.token.providers.pki.Provider
+openstack-config --set /etc/keystone/keystone.conf token provider keystone.token.providers.uuid.Provider
 openstack-config --set /etc/keystone/keystone.conf token expiration 86400
 openstack-config --set /etc/keystone/keystone.conf token driver keystone.token.backends.sql.Token
 
@@ -132,10 +132,17 @@ openstack-config --set /etc/keystone/keystone.conf token driver keystone.token.b
 # 	openstack-config --set /etc/keystone/keystone.conf publisher_rpc metering_secret $SERVICE_TOKEN
 # fi
 
-keystone-manage pki_setup --keystone-user keystone --keystone-group keystone
+case $keystonetokenflavor in
+"pki")
+	keystone-manage pki_setup --keystone-user keystone --keystone-group keystone
+	chown -R keystone:keystone /var/log/keystone /etc/keystone/ssl
+	openstack-config --set /etc/keystone/keystone.conf token provider keystone.token.providers.pki.Provider
+	;;
+"uuid")
+	openstack-config --set /etc/keystone/keystone.conf token provider keystone.token.providers.uuid.Provider
+	;;
+esac
 
-
-chown -R keystone:keystone /var/log/keystone /etc/keystone/ssl
 
 su keystone -s /bin/sh -c "keystone-manage db_sync"
 

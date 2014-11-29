@@ -62,21 +62,37 @@ fi
 echo ""
 echo "Instalando paquetes para Ceilometer"
 
-yum install -y openstack-ceilometer-api \
-	openstack-ceilometer-central \
-	openstack-ceilometer-collector \
-	openstack-ceilometer-common \
-	openstack-ceilometer-compute \
-	python-ceilometerclient \
-	python-ceilometer \
-	python-ceilometerclient-doc \
-	openstack-utils \
-	openstack-selinux
-
-if [ $ceilometeralarms == "yes" ]
+if [ $ceilometer_in_compute_node == "no" ]
 then
-	yum install -y openstack-ceilometer-alarm
+        echo ""
+        echo "Paquetes para Controller o ALL-IN-ONE"
+        echo ""
+        yum install -y openstack-ceilometer-api \
+                openstack-ceilometer-central \
+                openstack-ceilometer-collector \
+                openstack-ceilometer-common \
+                openstack-ceilometer-compute \
+                python-ceilometerclient \
+                python-ceilometer \
+                python-ceilometerclient-doc \
+                openstack-utils \
+                openstack-selinux
+
+        if [ $ceilometeralarms == "yes" ]
+        then
+                yum install -y openstack-ceilometer-alarm
+        fi
+else
+        echo ""
+        echo "Paquetes para nodo de Compute"
+        echo ""
+        yum install -y openstack-utils \
+                openstack-selinux \
+                openstack-ceilometer-compute \
+                python-ceilometerclient \
+                python-pecan
 fi
+
 
 echo "Listo"
 echo ""
@@ -89,10 +105,13 @@ echo ""
 echo "Instalando y configurando Backend de BD MongoDB"
 echo ""
 
-yum -y install mongodb-server
-sed -i '/--smallfiles/!s/OPTIONS=\"/OPTIONS=\"--smallfiles /' /etc/sysconfig/mongod
-service mongod start
-chkconfig mongod on
+if [ $ceilometer_in_compute_node = "no" ]
+then
+	yum -y install mongodb-server
+	sed -i '/--smallfiles/!s/OPTIONS=\"/OPTIONS=\"--smallfiles /' /etc/sysconfig/mongod
+	service mongod start
+	chkconfig mongod on
+fi
 
 echo ""
 echo "Configurando Ceilometer"
@@ -219,38 +238,57 @@ service iptables save
 
 echo "Listo"
 
-service openstack-ceilometer-compute start
-chkconfig openstack-ceilometer-compute on
-
-service openstack-ceilometer-central start
-chkconfig openstack-ceilometer-central on
-
-service openstack-ceilometer-api start
-chkconfig openstack-ceilometer-api on
-
-service openstack-ceilometer-collector start
-chkconfig openstack-ceilometer-collector on
-
-service openstack-ceilometer-notification start
-chkconfig openstack-ceilometer-notification on
-
-if [ $ceilometeralarms == "yes" ]
+if [ $ceilometer_in_compute_node == "no" ]
 then
-	service openstack-ceilometer-alarm-notifier start
-	chkconfig openstack-ceilometer-alarm-notifier on
+        if [ $ceilometer_without_compute == "no" ]
+        then
+                service openstack-ceilometer-compute start
+                chkconfig openstack-ceilometer-compute on
+        else
+                service openstack-ceilometer-compute stop
+                chkconfig openstack-ceilometer-compute off
+        fi
 
-	service openstack-ceilometer-alarm-evaluator start
-	chkconfig openstack-ceilometer-alarm-evaluator on
+        service openstack-ceilometer-central start
+        chkconfig openstack-ceilometer-central on
+
+        service openstack-ceilometer-api start
+        chkconfig openstack-ceilometer-api on
+
+        service openstack-ceilometer-collector start
+        chkconfig openstack-ceilometer-collector on
+
+        service openstack-ceilometer-notification start
+        chkconfig openstack-ceilometer-notification on
+
+        if [ $ceilometeralarms == "yes" ]
+        then
+                service openstack-ceilometer-alarm-notifier start
+                chkconfig openstack-ceilometer-alarm-notifier on
+
+                service openstack-ceilometer-alarm-evaluator start
+                chkconfig openstack-ceilometer-alarm-evaluator on
+        fi
+
+        service mongod stop
+        service mongod start
+
+        service openstack-ceilometer-api restart
+        service openstack-ceilometer-compute restart
+        service openstack-ceilometer-central restart
+        service openstack-ceilometer-collector restart
+        service openstack-ceilometer-notification restart
+
+        sync
+        sleep 2
+        sync
+
+else
+        service openstack-ceilometer-compute start
+        chkconfig openstack-ceilometer-compute on
+        service openstack-ceilometer-compute restart
 fi
 
-service mongod stop
-service mongod start
-
-service openstack-ceilometer-api restart
-service openstack-ceilometer-compute restart
-service openstack-ceilometer-central restart
-service openstack-ceilometer-collector restart
-service openstack-ceilometer-notification restart
 
 sync
 sleep 2
@@ -269,6 +307,17 @@ else
 	if [ $ceilometeralarms == "yes" ]
 	then
 		date > /etc/openstack-control-script-config/ceilometer-installed-alarms
+	fi
+	if [ $ceilometer_in_compute_node == "no" ]
+	then
+		date > /etc/openstack-control-script-config/ceilometer-full-installed
+	fi
+	if [ $ceilometer_without_compute == "yes" ]
+	then
+		if [ $ceilometer_in_compute_node == "no" ]
+		then
+			date > /etc/openstack-control-script-config/ceilometer-without-compute
+		fi
 	fi
 fi
 

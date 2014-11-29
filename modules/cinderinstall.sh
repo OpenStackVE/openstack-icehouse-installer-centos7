@@ -62,6 +62,7 @@ fi
 echo "Instalando paquetes para Cinder"
 
 yum -y install openstack-cinder openstack-utils openstack-selinux
+yum -y install scsi-target-utils scsi-target-utils-gluster
 
 cat ./libs/openstack-config > /usr/bin/openstack-config
 

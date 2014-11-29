@@ -181,6 +181,15 @@ sync
 sleep 2
 sync
 
+if [ -f /var/www/html/index.html ]
+then
+	mv /var/www/html/index.html /var/www/html/index.html.original
+	cp ./libs/index.html /var/www/html/
+else
+	cp ./libs/index.html /var/www/html/
+fi
+
+
 service httpd restart
 chkconfig httpd on
 

@@ -125,25 +125,34 @@ else
 	'
 fi
 
-if [ -f /etc/openstack-control-script-config/ceilometer-installed-alarms ]
+if [ -f /etc/openstack-control-script-config/ceilometer-full-installed ]
 then
-	alarm1="openstack-ceilometer-alarm-notifier"
-	alarm2="openstack-ceilometer-alarm-evaluator"
+        if [ -f /etc/openstack-control-script-config/ceilometer-without-compute ]
+        then
+                ceilometer_svc_start="
+                openstack-ceilometer-central
+                openstack-ceilometer-api
+                openstack-ceilometer-collector
+                openstack-ceilometer-notification
+                $alarm1
+                $alarm2
+                "
+        else
+                ceilometer_svc_start="
+                openstack-ceilometer-compute
+                openstack-ceilometer-central
+                openstack-ceilometer-api
+                openstack-ceilometer-collector
+                openstack-ceilometer-notification
+                $alarm1
+                $alarm2
+                "
+        fi
 else
-	alarm1=""
-	alarm2=""
+        ceilometer_svc_start="
+                openstack-ceilometer-compute
+        "
 fi
-
-ceilometer_svc_start="
-	openstack-ceilometer-compute
-	openstack-ceilometer-central
-	openstack-ceilometer-api
-	openstack-ceilometer-collector
-	openstack-ceilometer-notification
-	$alarm1
-	$alarm2
-"
-
 
 
 service_status_stop=`echo $service_status_start_enable_disable|tac -s' '`
