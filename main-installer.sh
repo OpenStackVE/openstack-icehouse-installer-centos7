@@ -11,8 +11,8 @@
 # Primera versión para Icehouse (ubuntu): Abril 23 del 2014
 #
 # Script principal
-# Versión 1.1.4.el7 "Snow Lynx"
-# 22 de Octubre del 2014
+# Versión 1.1.5.el7 "Snow Lynx"
+# 19 de Enero del 2015
 #
 
 PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
@@ -44,7 +44,7 @@ case $1 in
 	echo "Para releases 7.0 en adelante"
 	echo "Realizado por Reynaldo R. Martinez P."
 	echo "E-Mail: TigerLinux@Gmail.com"
-	echo "Versión 1.1.4.el7 \"Snow Lynx\" - Noviembre 29, 2014"
+	echo "Versión 1.1.5.el7 \"Snow Lynx\" - Enero 19, 2015"
 	echo ""
 	echo "Se verificaran los prerequisitos"
 	echo "Si alguno de los prerequisitos falla, se informará y se detendrá el proceso"

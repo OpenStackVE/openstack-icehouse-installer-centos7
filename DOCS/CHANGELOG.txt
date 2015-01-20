@@ -1,3 +1,9 @@
+1.1.5.el7 - 19-Enero-2015
+- Se corrige un bug en los parámetros de VNC y SPICE en el
+  módulo de instalación de nova.
+- Se agrega documentación sobre implementación en ambientes
+  de VLAN's. Vea el archivo en el directorio DOCS.
+
 1.1.4.el7 - 29-Noviembre-2014
 - Mejoras en módulo de instalación de ceilometer para
   casos de múltiples nodos de compute o controladores
